@@ -235,6 +235,8 @@ class WP_MS_Request_Membership {
 	 * @return string.
 	 */
 	public function alter_login_message( $retval ) {
+		$settings = self::get_settings();
+
 		// auto-join
 		if( ! empty( $settings['auto-join'] ) ) {
 			$message = sprintf( __( 'You have successfully joined this site with the role of "%s"', 'wp-ms-request' ), self::get_translatable_role() );
