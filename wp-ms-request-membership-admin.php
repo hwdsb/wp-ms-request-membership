@@ -69,7 +69,7 @@ class WP_MS_Request_Membership_Admin  {
 						<fieldset><legend class="screen-reader-text"><span><?php _e( 'Auto-join', 'wp-ms-request' ); ?></span></legend>
 						<label for="auto-join">
 							<input type="checkbox" name="settings[auto-join]" id="auto-join" value="1" <?php checked( self::$settings['auto-join'], 1 ); ?> />
-							<?php _e( 'Allow users who request membership to immediately auto-join the site.' ); ?>
+							<?php _e( 'Allow users who request membership to immediately auto-join the site.', 'wp-ms-request' ); ?>
 						</label>
 						</fieldset>
 
@@ -77,6 +77,22 @@ class WP_MS_Request_Membership_Admin  {
 					</td>
 				</tr>
 
+				<tr>
+					<th scope="row"><?php _e( 'Email', 'wp-ms-request' ); ?></th>
+					<td>
+						<fieldset><legend class="screen-reader-text"><span><?php _e( 'Email', 'wp-ms-request' ); ?></span></legend>
+							<label for="email-admin">
+								<input type="checkbox" name="settings[email-admin]" id="email-admin" value="1" <?php checked( self::$settings['email-admin'], 1 ); ?> />
+								<?php _e( 'Send an email notification to the administrator when a new user either auto-joins or is requesting membership to the site.', 'wp-ms-request' ); ?>
+							</label>
+
+							<label for="email-requestee">
+								<input type="checkbox" name="settings[email-requestee]" id="email-requestee" value="1" <?php checked( self::$settings['email-requestee'], 1 ); ?> />
+								<?php _e( "Send an email notification to the requestee when the administrator approves the user's request.", 'wp-ms-request' ); ?>
+							</label>
+						</fieldset>
+					</td>
+				</tr>
 			</tbody>
 			</table>
 
@@ -106,6 +122,14 @@ class WP_MS_Request_Membership_Admin  {
 
 		if ( ! isset( $settings['auto-join'] ) ) {
 			$settings['auto-join'] = 0;
+		}
+
+		if ( ! isset( $settings['email-admin'] ) ) {
+			$settings['email-admin'] = 0;
+		}
+
+		if ( ! isset( $settings['email-requestee'] ) ) {
+			$settings['email-requestee'] = 0;
 		}
 
 		// update DB option

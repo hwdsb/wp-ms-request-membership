@@ -68,6 +68,14 @@ class WP_MS_Request_Membership {
 			$settings['auto-join'] = 0;
 		}
 
+		if ( ! isset( $settings['email-admin'] ) ) {
+			$settings['email-admin'] = 0;
+		}
+
+		if ( ! isset( $settings['email-requestee'] ) ) {
+			$settings['email-requestee'] = 0;
+		}
+
 		return $settings;
 	}
 
@@ -176,6 +184,41 @@ class WP_MS_Request_Membership {
 				self::set_pending_user( $user_id, 'remove' );
 			}
 
+			// send an email to the admin
+			if ( false === (bool) $force_autojoin  && ! empty( $settings['email-admin'] ) ) {
+				wp_mail(
+					get_bloginfo( 'admin_email' ),
+					sprintf( __( '[%s] A new member has auto-joined your site', 'wp-ms-request' ), get_bloginfo ( 'name' ) ),
+					sprintf( __( "Hi,
+
+A new member, %1$s, has auto-joined your site.
+
+View this user's profile in the admin dashboard if desired:
+%2$s", 'wp-ms-request' ),
+	get_user_by( 'id', $user_id )->user_nicename,
+	admin_url( 'users.php' )
+					)
+				);
+			}
+
+			// send an email to the user if we are approving the user
+			if ( true === (bool) $force_autojoin && ! empty( $settings['email-requestee'] ) ) {
+				wp_mail(
+					get_user_by( 'id', $user_id )->user_email,
+					sprintf( __( '[%s] Your membership request was approved', 'wp-ms-request' ), get_bloginfo ( 'name' ) ),
+					sprintf( __( 'Hi %1$s,
+
+Your membership request to join the site, %2$s, with the role of "%3$s" was approved.
+
+%4$s', 'wp-ms-request' ),
+	get_user_by( 'id', $user_id )->user_nicename,
+	get_bloginfo( 'name' ),
+	self::get_translatable_role(),
+	home_url( '/' )
+					)
+				);
+			}
+
 			return $add_user;
 
 		// request membership
@@ -199,15 +242,30 @@ class WP_MS_Request_Membership {
 		if ( 'remove' === $mode ) {
 			unset( $pending_users[$user_id] );
 
-			// @todo send an email to the user?
-			//wp_mail();
-
 		// add user to pending requests
 		} else {
+			// add the user as a key
 			$pending_users[$user_id] = 1;
 
-			// @todo send an email to the admin?
-			//wp_mail();
+			// get our settings
+			$settings = self::get_settings();
+
+			// send an email to the admin
+			if ( ! empty( $settings['email-admin'] ) ) {
+				wp_mail(
+					get_bloginfo( 'admin_email' ),
+					sprintf( __( '[%s] A new member has requested membership to your site', 'wp-ms-request' ), get_bloginfo ( 'name' ) ),
+					sprintf( __( 'Hi,
+
+A new member, %1$s, has requested membership to your site.
+
+To approve or decline the request, login to the admin dashboard:
+%1$s', 'wp-ms-request' ),
+	get_user_by( 'id', $user_id )->user_nicename,
+	admin_url( 'users.php?page=ms-pending-requests' )
+					)
+				);
+			}
 		}
 
 		// update the DB option
