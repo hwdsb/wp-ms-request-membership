@@ -116,7 +116,7 @@ class WP_MS_Request_Membership {
 			self::add_user_to_blog( $user->ID );
 
 			// alter message on login screen
-			add_filter( 'login_message', array( $this, 'alter_login_message' ) );
+			add_filter( 'login_message', array( $this, 'set_confirmation_message' ) );
 		}
 
 		return $redirect_to;
@@ -127,18 +127,18 @@ class WP_MS_Request_Membership {
 	 */
 	public function validate_autoadd_submission() {
 		// auto-add nonce link
-		if ( empty( $_REQUEST['wp-ms-autoadd'] ) ) {
+		if ( empty( $_REQUEST['wp-ms-add'] ) ) {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( $_REQUEST['ms-auto-add-nonce'], 'wp-ms-autoadd' ) ) {
+		if ( ! wp_verify_nonce( $_REQUEST['ms-add-nonce'], 'wp-ms-add' ) ) {
 			wp_die( __( "Oops! You shouldn't be here!", 'wp-ms-request' ) );
 		}
 
 		// add the user to the blog
 		$add = self::add_user_to_blog();
 		if ( true === $add ) {
-			$message = sprintf( __( 'You have successfully joined this site with the role of "%s"', 'wp-ms-request' ), self::get_translatable_role() );
+			$message = $this->set_confirmation_message();
 		} else {
 			$message = __( 'Something went wrong when attempting to add you to the site.  Please notify the administrator.', 'wp-ms-request' );
 		}
@@ -234,7 +234,7 @@ class WP_MS_Request_Membership {
 	 *
 	 * @return string.
 	 */
-	public function alter_login_message( $retval ) {
+	public function set_confirmation_message( $retval = '' ) {
 		$settings = self::get_settings();
 
 		// auto-join
@@ -338,8 +338,8 @@ class WP_MS_Request_Membership_Widget extends WP_Widget {
 		?>
 
 			<form id="wp-ms-autoadd-form" method="POST" action="<?php echo home_url( '/' ); ?>">
-				<input type="hidden" name="wp-ms-autoadd" value="1" />
-				<?php wp_nonce_field( 'wp-ms-autoadd', 'ms-auto-add-nonce' ); ?>
+				<input type="hidden" name="wp-ms-add" value="1" />
+				<?php wp_nonce_field( 'wp-ms-add', 'ms-add-nonce' ); ?>
 				<input type="submit" value="<?php esc_attr_e( $autoadd_text ); ?>" />
 			</form>
 
