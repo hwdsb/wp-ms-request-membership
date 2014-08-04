@@ -260,7 +260,7 @@ Your membership request to join the site, %2$s, with the role of "%3$s" was appr
 A new member, %1$s, has requested membership to your site.
 
 To approve or decline the request, login to the admin dashboard:
-%1$s', 'wp-ms-request' ),
+%2$s', 'wp-ms-request' ),
 	get_user_by( 'id', $user_id )->user_nicename,
 	admin_url( 'users.php?page=ms-pending-requests' )
 					)
