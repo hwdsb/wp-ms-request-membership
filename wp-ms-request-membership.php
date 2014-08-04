@@ -416,9 +416,9 @@ class WP_MS_Request_Membership_Widget extends WP_Widget {
 		</p>
 
 		<p>
-		<label for="<?php echo $this->get_field_id( 'autoadd_text' ); ?>"><?php _e( 'Auto-join Button Text:', 'wp-ms-request' ); ?></label>
+		<label for="<?php echo $this->get_field_id( 'autoadd_text' ); ?>"><?php _e( 'Button Text:', 'wp-ms-request' ); ?></label>
 		<input class="widefat" id="<?php echo $this->get_field_id( 'autoadd_text' ); ?>" name="<?php echo $this->get_field_name( 'autoadd_text' ); ?>" type="text" value="<?php echo esc_attr( $autoadd_text ); ?>"><br />
-		<small><?php _e( 'The auto-join button is only shown if auto-join is on and a user is logged-in while viewing the widget.', 'wp-ms-request' ); ?></small>
+		<small><?php _e( 'The button is only shown if a user is logged-in and is not a member of the site while viewing the widget.', 'wp-ms-request' ); ?></small>
 		</p>
 
 		<?php
