@@ -326,6 +326,27 @@ To approve or decline the request, login to the admin dashboard:
 
 		return translate_user_role( $wp_roles->roles[$role]['name'] );
 	}
+
+	/**
+	 * Return the join button.
+	 *
+	 * @param string $button_text Text for the button.
+	 */
+	public static function get_button( $button_text = '' ) {
+		if ( empty( $button_text ) ) {
+			$button_text = __( 'Join this site!', 'wp-ms-request' );
+		}
+
+		return sprintf(
+			'<form id="wp-ms-autoadd-form" method="POST" action="%1$s">
+				<input type="hidden" name="wp-ms-add" value="1" />%2$s
+				<input type="submit" value="%3$s" class="button" />
+			</form>',
+				home_url( '/' ),
+				wp_nonce_field( 'wp-ms-add', 'ms-add-nonce', true, false ),
+				esc_attr( $button_text )
+		);
+	}
 }
 
 /**
@@ -396,15 +417,9 @@ class WP_MS_Request_Membership_Widget extends WP_Widget {
 		if ( is_user_logged_in() ) {
 			echo $loggedin_text;
 
-		?>
+			// Output button.
+			echo WP_MS_Request_Membership::get_button( $autoadd_text );
 
-			<form id="wp-ms-autoadd-form" method="POST" action="<?php echo home_url( '/' ); ?>">
-				<input type="hidden" name="wp-ms-add" value="1" />
-				<?php wp_nonce_field( 'wp-ms-add', 'ms-add-nonce' ); ?>
-				<input type="submit" value="<?php esc_attr_e( $autoadd_text ); ?>" />
-			</form>
-
-		<?php
 		} else {
 			echo $loggedout_text;
 
