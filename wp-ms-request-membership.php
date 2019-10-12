@@ -9,6 +9,8 @@ Author URI: http://profiles.wordpress.org/r-a-y
 
 add_action( 'plugins_loaded', array( 'WP_MS_Request_Membership', 'init' ) );
 
+add_action( 'widgets_init',   array( 'WP_MS_Request_Membership', 'register_widget' ) );
+
 /**
  * Core class.
  */
@@ -49,9 +51,6 @@ class WP_MS_Request_Membership {
 			add_action( 'login_form_wp-ms-request', array( $this, 'login_listener' ) );
 			add_action( 'template_redirect',        array( $this, 'validate_autoadd_submission' ) );
 		}
-
-		// all-access
-		add_action( 'widgets_init', array( $this, 'register_widget' ) );
 	}
 
 	/**
@@ -91,7 +90,11 @@ class WP_MS_Request_Membership {
 	/**
 	 * Register our widget.
 	 */
-	public function register_widget() {
+	public static function register_widget() {
+		if ( ! is_multisite() ) {
+			return;
+		}
+
 		register_widget( 'WP_MS_Request_Membership_Widget' );
 	}
 
