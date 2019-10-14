@@ -49,7 +49,7 @@ class WP_MS_Request_Membership {
 		// frontend stuff
 		} else {
 			add_action( 'login_form_wp-ms-request', array( $this, 'login_listener' ) );
-			add_action( 'template_redirect',        array( $this, 'validate_autoadd_submission' ) );
+			add_action( 'template_redirect',        array( $this, 'validate_autoadd_submission' ), 0 );
 		}
 	}
 
