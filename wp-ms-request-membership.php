@@ -68,11 +68,11 @@ class WP_MS_Request_Membership {
 		}
 
 		if ( ! isset( $settings['email-admin'] ) ) {
-			$settings['email-admin'] = 0;
+			$settings['email-admin'] = 1;
 		}
 
 		if ( ! isset( $settings['email-requestee'] ) ) {
-			$settings['email-requestee'] = 0;
+			$settings['email-requestee'] = 1;
 		}
 
 		return $settings;
