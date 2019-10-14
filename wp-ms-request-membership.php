@@ -195,6 +195,11 @@ class WP_MS_Request_Membership {
 			$user_id = get_current_user_id();
 		}
 
+		// Bail if already a member of the blog.
+		if ( is_user_member_of_blog( $user_id ) ) {
+			return false;
+		}
+
 		$settings = self::get_settings();
 		$role = $settings['default-role'];
 
