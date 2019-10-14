@@ -146,16 +146,39 @@ class WP_MS_Request_Membership {
 			wp_die( __( "Oops! You shouldn't be here!", 'wp-ms-request' ) );
 		}
 
+		$return_link = home_url( '/' );
+		$return_text = get_bloginfo( 'title', 'display' );
+
 		// add the user to the blog
 		$add = self::add_user_to_blog();
 		if ( true === $add ) {
+			/*
+			 * For those using the More Privacy Options plugin, if the site privacy is
+			 * less than zero and auto-join is off, set the return link to the main site.
+			 */
+			$settings = self::get_settings();
+			$privacy  = intval( get_option( 'blog_public' ) );
+			if( empty( $settings['auto-join'] ) && $privacy < 0 ) {
+				$return_link = network_home_url( '/' );
+				$return_text = get_blog_option( get_main_site_id(), 'blogname' );
+			}
+
 			$message = $this->set_confirmation_message();
 		} else {
 			$message = __( 'Something went wrong when attempting to add you to the site.  Please notify the administrator.', 'wp-ms-request' );
 		}
 
-		$html = "<p>{$message}</p>";
-		$html .= '<p id="backtoblog"><a href="' . esc_url( home_url( '/' ) ) . '">' . sprintf( __( '&larr; Back to %s', 'wp-ms-request' ), get_bloginfo( 'title', 'display' ) ) . '</a></p></div>';
+		$link = sprintf( '<a href="%1$s">%2$s</a>',
+			esc_url( $return_link ),
+			sprintf( __( '&larr; Back to %s', 'wp-ms-request' ),
+				esc_html( $return_text )
+			)
+		);
+
+		$html = "";
+		$html .= sprintf( '<p>%1$s</p><p id="backtoblog">%2$s</p></div>',
+			$message, $link
+		);
 
 		wp_die( $html );
 	}
