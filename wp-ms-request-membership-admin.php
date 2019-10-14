@@ -340,7 +340,7 @@ class WP_MS_Request_Membership_Admin  {
 	/**
 	 * Filter to remove the "Administrator" role from the dropdown users menu.
 	 */
-	public function remove_administrator( $retval ) {
+	public static function remove_administrator( $retval ) {
 		unset( $retval['administrator'] );
 		return $retval;
 	}
