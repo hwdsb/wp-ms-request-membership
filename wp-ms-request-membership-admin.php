@@ -312,7 +312,7 @@ class WP_MS_Request_Membership_Admin  {
 		);
 
 		// add success message
-		add_action( 'admin_notices', self::output_notice() );
+		add_action( 'admin_notices', array( __CLASS__, 'output_notice' ) );
 	}
 
 	/**
@@ -320,7 +320,7 @@ class WP_MS_Request_Membership_Admin  {
 	 *
 	 * @see WP_MS_Request_Membership_Admin::output_notice()
 	 */
-	protected static function output_notice() {
+	public static function output_notice() {
 		global $current_screen;
 
 		if ( empty( $current_screen->admin_notice ) ) {
